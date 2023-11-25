@@ -26,7 +26,9 @@ function App() {
     if (mode === "create") {
       try {
         await axios.post(`http://localhost:4000/api/task`, {
-          title, date, description
+          title, date,
+          ...(description && { description })
+
         })
         setRefreshData((prev) => !prev)
         setShowCreateTask(false)
@@ -36,7 +38,7 @@ function App() {
       }
     } else if (mode === "update") {
       try {
-        await axios.put(`http://localhost:4000/api/task/${EditTask.id}`, {
+        await axios.patch(`http://localhost:4000/api/task/${EditTask.id}`, {
           title, date, description
         })
         setRefreshData((prev) => !prev)
@@ -65,11 +67,11 @@ function App() {
           showCreateTask ?
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className='text-sm border-dashed border-green-400 border mt-10 p-8 rounded-2xl'>
-              <div className='flex gap-x-2 items-center justify-between'>
-                <div className='w-1/2  flex items-center gap-x-4' >
-                  <label className='w-[89px]  inline-block'>Title</label>
-                  <div className='w-full'>
+              className='w-[90%] mx-auto text-sm border-dashed border-green-400 border mt-10 px-4 py-4 sm:p-8  rounded-2xl'>
+              <div className='flex gap-x-2 items-center justify-between flex-col sm:flex-row gap-y-4'>
+                <div className='w-full sm:w-1/2  flex items-center gap-x-4 flex-col  gap-y-2 sm:flex-row' >
+                  <label className='sm:w-[70px]  inline-block self-start sm:self-center'>Title</label>
+                  <div className='w-full flex-1'>
                     <input
                       type='text'
                       className=' p-2 rounded-md border outline-none w-full bg-transparent'
@@ -79,9 +81,9 @@ function App() {
                     <p className='text-red-500 text-xs '> {errors?.title?.type === "required" && "Title is Required"}</p>
                   </div>
                 </div>
-                <div className=' flex items-center gap-x-2'>
-                  <label className='text-xs whitespace-nowrap'>Due Date</label>
-                  <div className=''>
+                <div className=' flex items-center gap-x-2 w-full sm:w-[unset] flex-col  gap-y-2 sm:flex-row'>
+                  <label className='text-xs whitespace-nowrap self-start sm:self-center'>Due Date</label>
+                  <div className='flex-1 sm:flex-0 w-full'>
                     <input
                       type='date'
                       className=' p-2 rounded-md border outline-none w-full bg-transparent'
@@ -92,7 +94,7 @@ function App() {
                   </div>
                 </div>
               </div>
-              <div className='mt-4 flex gap-x-4 '>
+              <div className='mt-4 flex gap-x-4  flex-col gap-y-2 sm:flex-row'>
                 <label className=' '>Description</label>
                 <div className='w-full'>
                   <textarea
@@ -121,16 +123,16 @@ function App() {
               onClick={() => { setMode("create"); setShowCreateTask(true) }}
               className='bg-black text-white rounded-md px-4 py-1 text-sm mt-10 ml-10'>Create new Task +</button>
         }
-        <ul className=' px-10'>
-          {tasks?.map((task: Inputs, index: number) => (<li key={task?.id} className='border-b border-b-white p-4 flex items-center justify-between mt-5'>
+        <ul className='px-4 sm:px-10'>
+          {tasks?.map((task: Inputs, index: number) => (<li key={task?.id} className='border-b border-b-white p-4 border flex flex-col sm:flex-row items-center justify-between mt-5 gap-y-4'>
             <div className=''>
-              <span className='text-xl font-semibold'>
+              <span className=' text-xl font-semibold'>
                 {index + 1}.{" "}
                 {task?.title}</span>
               <p className='text-xs text-gray-300 mt-1'>Due Date: {task?.date}</p>
               <p className='mt-2 text-sm'>{task?.description}</p>
             </div>
-            <div className=''>
+            <div className='flex gap-x-3 self-start'>
               <button
                 onClick={(e) => { e.stopPropagation(); task?.id && removeHandler(task?.id) }}
                 className='bg-red-600 text-white text-xs px-4 py-1 rounded-sm w-[70px]'>Remove</button>
@@ -144,7 +146,7 @@ function App() {
                   setValue("title", task?.title)
                   setValue("description", task?.description)
                 }}
-                className='bg-blue-600 text-white text-xs px-4 py-1 rounded-sm w-[70px] ml-4'>Edit</button>
+                className='bg-blue-600 text-white text-xs px-4 py-1 rounded-sm w-[70px] '>Edit</button>
             </div>
           </li>))}
         </ul>
