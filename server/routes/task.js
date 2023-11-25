@@ -5,17 +5,19 @@ import getTaskById from '../controller/task/getTaskById.js'
 import updateTask from '../controller/task/updateTask.js'
 import delateTask from '../controller/task/deleteTask.js'
 import asyncHandler from '../helper/asyncHandler.js'
+import { createTaskSchema, updateTaskSchema } from '../helper/types.js'
+import validator from '../middlewares/validator.js'
 
 const router = express.Router()
 
 
 router.get("/", asyncHandler(getAllTasks))
 
-router.post("/", asyncHandler(createNewTask))
+router.post("/", validator(createTaskSchema), asyncHandler(createNewTask))
 
 router.get("/:id", asyncHandler(getTaskById))
 
-router.put("/:id", asyncHandler(updateTask))
+router.patch("/:id", validator(updateTaskSchema), asyncHandler(updateTask))
 
 router.delete("/:id", asyncHandler(delateTask))
 
